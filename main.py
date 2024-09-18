@@ -11,31 +11,22 @@ def search_game(query: str):
     pass
 
 def request_json(url: str):
-
-    try:
-        obj = json.loads(requests.get(url).content)
-
-        if request.status_code != 200:
-            print("Error getting JSON: ", url)
-            print("Status code: ", request.status_code)
-            print("Content: ", request.content)
-    except:
-        print("Error getting JSON: ", url)
-        return None
-    return obj
+    request = requests.get(url, headers=headers)
+    obj = json.loads(request.content)
+    print(obj)
+    return request, obj
 
     #return json.loads(requests.get(url, headers=headers).content)
 
 
 def download_game(upload_id: str, filename: str = None):
     # Get download link
-    dl_url = request_json(f"https://itch.io/api/1/{constants.API_KEY}/upload/504289/download")["url"]
+    dl_url = request_json(f"https://itch.io/api/1/{constants.API_KEY}/upload/504289/download")
 
     if not filename:
         #filename = request_json(f"https://api.itch.io/games/{upload_id}")
         #filename = request_json(f"https://itch.io/api/1/{constants.API_KEY}/games/{upload_id}")
-        game_info = request_json(f"https://api.itch.io/games/{upload_id}")
-
+        _, game_info = request_json(f"https://api.itch.io/games/{upload_id}")
         filename = game_info["game"]["title"]
         filename = utils.slugify(filename)
         print(filename)
@@ -61,6 +52,5 @@ def main():
     pass
 
 if __name__ == "__main__":
-    print(constants.API_KEY)
-    download_game("5737196")
+    download_game("11393136")
     #main()
